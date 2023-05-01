@@ -10,17 +10,20 @@ const _ = require('lodash');
 const pr = _.get(danger, 'github.pr');
 const title = _.trim(_.get(pr, 'title'))
 let issueType;
+let passed;
 
 if (title.includes('PS-')) {
     issueType = 'PS';
+    passed = true;
 } else if (title.includes('PS-')) {
     issueType = 'PS';
+    passed = true;
 } else {
-    issueType = 'INSIGHT'
+    passed = false;
     fail('PR Validation Failed :disappointed:');
 }
 
-if (pr) {
+if (passed) {
     jiraIssue({
         key: issueType,
         url: 'https://mediafly.atlassian.net/browse',
