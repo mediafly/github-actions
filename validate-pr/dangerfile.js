@@ -15,8 +15,8 @@ let passed;
 if (title.includes('PS-')) {
     issueType = 'PS';
     passed = true;
-} else if (title.includes('PS-')) {
-    issueType = 'PS';
+} else if (title.includes('INSIGHT-')) {
+    issueType = 'INSIGHT';
     passed = true;
 } else {
     passed = false;
