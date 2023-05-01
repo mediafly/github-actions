@@ -8,14 +8,19 @@ const jiraIssue = require('danger-plugin-jira-issue').default;
 const _ = require('lodash');
 
 const pr = _.get(danger, 'github.pr');
+let issueType;
 
-if (!_.startsWith(_.trim(_.get(pr, 'title')), 'INSIGHT-')) {
+if (title.startsWith('INSIGHT-')) {
+    issueType = 'INSIGHT';
+} else if (title.startsWith('PS-')) {
+    issueType = 'PS';
+} else {
     fail('PR Validation Failed :disappointed:');
 }
 
 if (pr) {
     jiraIssue({
-        key: 'INSIGHT',
+        key: issueType,
         url: 'https://mediafly.atlassian.net/browse',
         location: 'title',
         format: (emoji, jiraUrls) => {
