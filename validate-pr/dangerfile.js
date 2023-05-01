@@ -11,11 +11,12 @@ const pr = _.get(danger, 'github.pr');
 const title = _.trim(_.get(pr, 'title'))
 let issueType;
 
-if (title.includes('INSIGHT-')) {
-    issueType = 'INSIGHT';
+if (title.includes('PS-')) {
+    issueType = 'PS';
 } else if (title.includes('PS-')) {
     issueType = 'PS';
 } else {
+    issueType = 'INSIGHT'
     fail('PR Validation Failed :disappointed:');
 }
 
