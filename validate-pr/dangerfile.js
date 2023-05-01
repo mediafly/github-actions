@@ -8,6 +8,7 @@ const jiraIssue = require('danger-plugin-jira-issue').default;
 const _ = require('lodash');
 
 const pr = _.get(danger, 'github.pr');
+const title = _.trim(_.get(pr, 'title'))
 let issueType;
 
 if (title.startsWith('INSIGHT-')) {
