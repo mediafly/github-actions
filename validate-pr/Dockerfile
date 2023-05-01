@@ -1,4 +1,4 @@
-FROM node:18
+FROM node:10
 
 COPY . /_github-actions/validate-pr/
 
