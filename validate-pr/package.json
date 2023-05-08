@@ -13,7 +13,7 @@
         "danger": "^10.2.0",
         "danger-plugin-jira-issue": "^1.4.1",
         "lodash": "^4.17.11",
-        "node-fetch": "^2.6.9"
+        "node-fetch": "2.6.9"
     },
     "devDependencies": {
         "eslint": "^5.8.0",
