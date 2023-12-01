@@ -1,13 +1,19 @@
 'use strict';
 
 // always import danger first
-const { fail, danger } = require('danger');
+const { fail, warn, danger } = require('danger');
 
 // danger-plugin-jira-issue exports a default function to hacking to get it imported
 const jiraIssue = require('danger-plugin-jira-issue').default;
 const _ = require('lodash');
 
 const pr = _.get(danger, 'github.pr');
+
+if (_.get(pr, 'user.type') === 'Bot') {
+    warn('Skipping PR title validation since this is from a bot.  If you wish to merge this PR, please open an issue and update the title!');
+    process.exit(0);
+}
+
 const title = _.trim(_.get(pr, 'title'))
 let issueType;
 let passed;
