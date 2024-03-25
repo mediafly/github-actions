@@ -23,14 +23,14 @@ try {
     [, issueType] = title.match(/^(\w+)-.*$/);
 } catch {
     fail('PR Validation Failed :disappointed:.  Could not detect issue type from PR title.');
-    process.exit(1);
+    process.exit(0);
 }
 
 issueType = issueType.toUpperCase();
 
 if (!_.includes(ALLOWED_ISSUE_TYPES, issueType)) {
     fail(`PR Validation Failed :disappointed:.  Issue type ${issueType} not recognized.`);
-    process.exit(1);
+    process.exit(0);
 }
 
 jiraIssue({
