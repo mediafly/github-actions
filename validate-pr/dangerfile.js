@@ -7,6 +7,8 @@ const { fail, warn, danger } = require('danger');
 const jiraIssue = require('danger-plugin-jira-issue').default;
 const _ = require('lodash');
 
+const ALLOWED_ISSUE_TYPES = ['PS', 'INSIGHT', 'AI', 'CE', 'FOUND', 'COACH'];
+
 const pr = _.get(danger, 'github.pr');
 
 if (_.get(pr, 'user.type') === 'Bot') {
@@ -16,17 +18,20 @@ if (_.get(pr, 'user.type') === 'Bot') {
 
 const title = _.trim(_.get(pr, 'title'))
 let issueType;
-let passed;
+let passed = true;
 
-if (title.includes('PS-')) {
-    issueType = 'PS';
-    passed = true;
-} else if (title.includes('INSIGHT-')) {
-    issueType = 'INSIGHT';
-    passed = true;
-} else {
+try {
+    [issueType] = title.match(/^(\w+)-.*$/);
+} catch {
     passed = false;
-    fail('PR Validation Failed :disappointed:');
+    fail('PR Validation Failed :disappointed:.  Could not detect issue type from PR title.');
+}
+
+issueType = issueType.toUpperCase();
+
+if (!_.includes(ALLOWED_ISSUE_TYPES, issueType)) {
+    passed = false;
+    fail(`PR Validation Failed :disappointed:.  Issue type ${issueType} not recognized.`);
 }
 
 if (passed) {
