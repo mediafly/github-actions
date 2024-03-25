@@ -18,31 +18,28 @@ if (_.get(pr, 'user.type') === 'Bot') {
 
 const title = _.trim(_.get(pr, 'title'))
 let issueType;
-let passed = true;
 
 try {
     [, issueType] = title.match(/^(\w+)-.*$/);
 } catch {
-    passed = false;
     fail('PR Validation Failed :disappointed:.  Could not detect issue type from PR title.');
+    process.exit(1);
 }
 
 issueType = issueType.toUpperCase();
 
 if (!_.includes(ALLOWED_ISSUE_TYPES, issueType)) {
-    passed = false;
     fail(`PR Validation Failed :disappointed:.  Issue type ${issueType} not recognized.`);
+    process.exit(1);
 }
 
-if (passed) {
-    jiraIssue({
-        key: issueType,
-        url: 'https://mediafly.atlassian.net/browse',
-        location: 'title',
-        format: (emoji, jiraUrls) => {
-            return _.size(jiraUrls) === 1
-                ? `${emoji} JIRA ticket: ${jiraUrls[0]}`
-                : `${emoji} JIRA tickets:<br>- ${jiraUrls.join('<br>- ')}`;
-        }
-    });
-}
+jiraIssue({
+    key: issueType,
+    url: 'https://mediafly.atlassian.net/browse',
+    location: 'title',
+    format: (emoji, jiraUrls) => {
+        return _.size(jiraUrls) === 1
+            ? `${emoji} JIRA ticket: ${jiraUrls[0]}`
+            : `${emoji} JIRA tickets:<br>- ${jiraUrls.join('<br>- ')}`;
+    }
+});
