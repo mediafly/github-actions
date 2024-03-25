@@ -21,7 +21,7 @@ let issueType;
 let passed = true;
 
 try {
-    [issueType] = title.match(/^(\w+)-.*$/);
+    [, issueType] = title.match(/^(\w+)-.*$/);
 } catch {
     passed = false;
     fail('PR Validation Failed :disappointed:.  Could not detect issue type from PR title.');
