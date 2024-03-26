@@ -7,6 +7,8 @@ const { fail, warn, danger } = require('danger');
 const jiraIssue = require('danger-plugin-jira-issue').default;
 const _ = require('lodash');
 
+const ALLOWED_ISSUE_TYPES = ['PS', 'INSIGHT', 'AI', 'CE', 'FOUND', 'COACH'];
+
 const pr = _.get(danger, 'github.pr');
 
 if (_.get(pr, 'user.type') === 'Bot') {
@@ -16,28 +18,28 @@ if (_.get(pr, 'user.type') === 'Bot') {
 
 const title = _.trim(_.get(pr, 'title'))
 let issueType;
-let passed;
 
-if (title.includes('PS-')) {
-    issueType = 'PS';
-    passed = true;
-} else if (title.includes('INSIGHT-')) {
-    issueType = 'INSIGHT';
-    passed = true;
-} else {
-    passed = false;
-    fail('PR Validation Failed :disappointed:');
+try {
+    [, issueType] = title.match(/^(\w+)-.*$/);
+} catch {
+    fail('PR Validation Failed :disappointed:.  Could not detect issue type from PR title.');
+    process.exit(0);
 }
 
-if (passed) {
-    jiraIssue({
-        key: issueType,
-        url: 'https://mediafly.atlassian.net/browse',
-        location: 'title',
-        format: (emoji, jiraUrls) => {
-            return _.size(jiraUrls) === 1
-                ? `${emoji} JIRA ticket: ${jiraUrls[0]}`
-                : `${emoji} JIRA tickets:<br>- ${jiraUrls.join('<br>- ')}`;
-        }
-    });
+issueType = issueType.toUpperCase();
+
+if (!_.includes(ALLOWED_ISSUE_TYPES, issueType)) {
+    fail(`PR Validation Failed :disappointed:.  Issue type ${issueType} not recognized.`);
+    process.exit(0);
 }
+
+jiraIssue({
+    key: issueType,
+    url: 'https://mediafly.atlassian.net/browse',
+    location: 'title',
+    format: (emoji, jiraUrls) => {
+        return _.size(jiraUrls) === 1
+            ? `${emoji} JIRA ticket: ${jiraUrls[0]}`
+            : `${emoji} JIRA tickets:<br>- ${jiraUrls.join('<br>- ')}`;
+    }
+});
